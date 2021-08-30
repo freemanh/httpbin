@@ -6,4 +6,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/webhook', function(req, res, next) {
+  res.send('')
+});
+
 module.exports = router;

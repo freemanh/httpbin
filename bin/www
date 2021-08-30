@@ -24,10 +24,15 @@ var server = http.createServer(app);
 /**
  * Support websocket
  */
- const options = { /* ... */ };
- const io = require('socket.io')(server, options);
- 
- io.on('connection', socket => { /* ... */ });
+const options = { /* ... */ };
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "*",
+  }
+});
+
+
+io.on('connection', socket => { /* ... */ });
 
 /**
  * Listen on provided port, on all network interfaces.

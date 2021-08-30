@@ -15,13 +15,21 @@
     </a-layout-header>
     <a-layout>
       <a-layout-sider width="250" style="background: #fff; padding-left: 12px">
-        <a-list item-layout="horizontal" :data-source="data" :loading="{tip:'Waiting for http requests', spinning: data.length==0}" header="Requests(Newest First)">
+        <a-list
+          item-layout="horizontal"
+          :data-source="data"
+          :loading="{
+            tip: 'Waiting for http requests',
+            spinning: data.length == 0,
+          }"
+          header="Requests(Newest First)"
+        >
           <a-list-item slot="renderItem" slot-scope="item">
             <a-list-item-meta description="08/26/2021 2:55:54 PM">
               <span slot="title">{{ item.title }}</span>
               <a-avatar
                 slot="avatar"
-                style="color: #fff; backgroundColor: #5cb85c"
+                style="color: #fff; backgroundcolor: #5cb85c"
                 shape="square"
               >
                 GET
@@ -47,11 +55,25 @@
           <a-row gutter="24">
             <a-col :span="12">
               <b>Request Details</b>
-              <a-table :columns="detailColumns" :data-source="detailData" :showHeader="false" :pagination="false" size="middle"> </a-table>
+              <a-table
+                :columns="detailColumns"
+                :data-source="detailData"
+                :showHeader="false"
+                :pagination="false"
+                size="middle"
+              >
+              </a-table>
             </a-col>
             <a-col :span="12">
               <b>Headers</b>
-              <a-table :columns="detailColumns" :data-source="detailData" :showHeader="false" :pagination="false" size="middle"> </a-table>
+              <a-table
+                :columns="detailColumns"
+                :data-source="detailData"
+                :showHeader="false"
+                :pagination="false"
+                size="middle"
+              >
+              </a-table>
             </a-col>
           </a-row>
         </a-layout-content>
@@ -60,30 +82,36 @@
   </a-layout>
 </template>
 <script>
-const io = require('socket.io-client');
+const io = require("socket.io-client");
 
-const socket = io('http://localhost:3000');
-
+const socket = io("http://localhost:3000");
+socket.on("connect", () => {
+  console.log("websocket connected..."); // true
+});
 
 const detailColumns = [
   {
     title: "Key",
     dataIndex: "key",
     key: "key",
-  },{
+  },
+  {
     title: "Value",
     dataIndex: "value",
     key: "value",
   },
 ];
 
-const detailData = [{
-  key: 'Method',
-  value: 'Get'
-},{
-  key: 'Host',
-  value: '58.220.95.91'
-}]
+const detailData = [
+  {
+    key: "Method",
+    value: "Get",
+  },
+  {
+    key: "Host",
+    value: "58.220.95.91",
+  },
+];
 
 export default {
   data() {
@@ -91,10 +119,15 @@ export default {
       detailColumns: detailColumns,
       detailData: detailData,
       collapsed: false,
-      data: [
-        {title:'test'}
-      ],
+      data: [{ title: "test" }],
     };
+  },
+
+  mounted() {
+    console.log("test");
+    this.axios.get("/webhook").then((res) => {
+      console.log(res.data);
+    });
   },
 };
 </script>
