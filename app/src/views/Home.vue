@@ -60,6 +60,11 @@
   </a-layout>
 </template>
 <script>
+const io = require('socket.io-client');
+
+const socket = io('http://localhost:3000');
+
+
 const detailColumns = [
   {
     title: "Key",
