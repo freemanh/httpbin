@@ -6,6 +6,7 @@ var cors = require('cors')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var logsRouter = require('./routes/logs');
 
 var app = express();
 
@@ -18,7 +19,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.text())
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/logs', logsRouter);
 
 module.exports = app;
