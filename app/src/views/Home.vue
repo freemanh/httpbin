@@ -26,13 +26,13 @@
         >
           <a-list-item slot="renderItem" slot-scope="item">
             <a-list-item-meta description="08/26/2021 2:55:54 PM">
-              <span slot="title">{{ item.title }}</span>
+              <span slot="title">{{ item.url }}</span>
               <a-avatar
                 slot="avatar"
-                style="color: #fff; backgroundcolor: #5cb85c"
+                style="color: #fff; backgroundColor: #5cb85c"
                 shape="square"
               >
-                GET
+                {{ item.method }}
               </a-avatar>
             </a-list-item-meta>
           </a-list-item>
@@ -57,7 +57,7 @@
               <b>Request Details</b>
               <a-table
                 :columns="detailColumns"
-                :data-source="detailData"
+                :data-source="details"
                 :showHeader="false"
                 :pagination="false"
                 size="middle"
@@ -67,8 +67,8 @@
             <a-col :span="12">
               <b>Headers</b>
               <a-table
-                :columns="detailColumns"
-                :data-source="detailData"
+                :columns="headerColumns"
+                :data-source="headers"
                 :showHeader="false"
                 :pagination="false"
                 size="middle"
@@ -102,14 +102,16 @@ const detailColumns = [
   },
 ];
 
-const detailData = [
+const headerColumns = [
   {
-    key: "Method",
-    value: "Get",
+    title: "Key",
+    dataIndex: "key",
+    key: "key",
   },
   {
-    key: "Host",
-    value: "58.220.95.91",
+    title: "Value",
+    dataIndex: "value",
+    key: "value",
   },
 ];
 
@@ -117,16 +119,30 @@ export default {
   data() {
     return {
       detailColumns: detailColumns,
-      detailData: detailData,
+      headerColumns: headerColumns,
+      headers: [],
+      details: [],
       collapsed: false,
-      data: [{ title: "test" }],
+      data: [],
     };
   },
 
   mounted() {
-    console.log("test");
-    this.axios.get("/webhook").then((res) => {
-      console.log(res.data);
+    this.axios.get("/logs").then((res) => {
+      this.data = res.data;
+      this.headers = Object.keys(res.data[0].headers).map((header) => {
+        return { key: header, value: res.data[0].headers[header] };
+      });
+      this.details = [
+        {
+          key: "Method",
+          value: res.data[0].method,
+        },
+        {
+          key: "Date",
+          value: res.data[0].createdAt,
+        },
+      ];
     });
   },
 };
