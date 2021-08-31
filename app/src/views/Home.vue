@@ -20,13 +20,13 @@
           :data-source="data"
           :loading="{
             tip: 'Waiting for http requests',
-            spinning: data.length == 0,
+            spinning: false,
           }"
-          header="Requests(Newest First)"
+          header="Requests (Last 50 records)"
         >
           <a-list-item slot="renderItem" slot-scope="item">
             <a-list-item-meta description="08/26/2021 2:55:54 PM">
-              <span slot="title">{{ item.url }}</span>
+              <span slot="title">{{ item.path }}</span>
               <a-avatar
                 slot="avatar"
                 style="color: #fff; backgroundColor: #5cb85c"
@@ -41,7 +41,7 @@
       <a-layout style="padding: 0 24px 24px">
         <a-page-header
           style="border: 1px solid rgb(235, 237, 240)"
-          title="https://webhook.site/bb89b4f4-d0e4-410a-86ad-4917705780f6"
+          :title="data[0].url"
           :backIcon="false"
         />
         <a-layout-content
@@ -71,6 +71,7 @@
                 :data-source="headers"
                 :showHeader="false"
                 :pagination="false"
+                
                 size="middle"
               >
               </a-table>
@@ -124,7 +125,13 @@ export default {
       details: [],
       collapsed: false,
       data: [],
+      selectedRowKeys:[]
     };
+  },
+  methods:{
+    onSelectChange(){
+      //this.selectedRowKeys = selectedRowKeys;
+    }
   },
 
   mounted() {
@@ -143,6 +150,7 @@ export default {
           value: res.data[0].createdAt,
         },
       ];
+
     });
   },
 };

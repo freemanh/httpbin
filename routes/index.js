@@ -1,4 +1,5 @@
 var express = require('express');
+var url = require('url');
 var router = express.Router();
 
 const RequestLog = require('../db/RequestLog')
@@ -9,10 +10,15 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/webhook', function (req, res, next) {
-  console.log(req.body)
-  
+  const fullURL = url.format({
+    protocol: req.protocol,
+    host: req.get('host'),
+    pathname: req.url
+  });
+
   const log = new RequestLog({
-    url: req.url,
+    url: fullURL,
+    path: req.url,
     method: req.method,
     createdAt: new Date(),
     body: req.body,

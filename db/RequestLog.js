@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 
 const schema = new Schema({
     url: String,
+    path: String,
     method: String,
     headers: {
         type: Map,
