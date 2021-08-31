@@ -29,7 +29,7 @@
               <span slot="title">{{ item.path }}</span>
               <a-avatar
                 slot="avatar"
-                style="color: #fff; backgroundColor: #5cb85c"
+                style="color: #fff; backgroundcolor: #5cb85c"
                 shape="square"
               >
                 {{ item.method }}
@@ -71,7 +71,6 @@
                 :data-source="headers"
                 :showHeader="false"
                 :pagination="false"
-                
                 size="middle"
               >
               </a-table>
@@ -83,13 +82,6 @@
   </a-layout>
 </template>
 <script>
-const io = require("socket.io-client");
-
-const socket = io("http://localhost:3000");
-socket.on("connect", () => {
-  console.log("websocket connected..."); // true
-});
-
 const detailColumns = [
   {
     title: "Key",
@@ -125,33 +117,45 @@ export default {
       details: [],
       collapsed: false,
       data: [],
-      selectedRowKeys:[]
+      selectedRowKeys: [],
     };
   },
-  methods:{
-    onSelectChange(){
+  methods: {
+    onSelectChange() {
       //this.selectedRowKeys = selectedRowKeys;
-    }
+    },
+    getLogs() {
+      this.axios.get("/logs").then((res) => {
+        this.data = res.data;
+        this.headers = Object.keys(res.data[0].headers).map((header) => {
+          return { key: header, value: res.data[0].headers[header] };
+        });
+        this.details = [
+          {
+            key: "Method",
+            value: res.data[0].method,
+          },
+          {
+            key: "Date",
+            value: res.data[0].createdAt,
+          },
+        ];
+      });
+    },
   },
 
   mounted() {
-    this.axios.get("/logs").then((res) => {
-      this.data = res.data;
-      this.headers = Object.keys(res.data[0].headers).map((header) => {
-        return { key: header, value: res.data[0].headers[header] };
-      });
-      this.details = [
-        {
-          key: "Method",
-          value: res.data[0].method,
-        },
-        {
-          key: "Date",
-          value: res.data[0].createdAt,
-        },
-      ];
+    const io = require("socket.io-client");
 
+    const socket = io("http://localhost:3000");
+    socket.on("connect", () => {
+      console.log("websocket connected..."); // true
     });
+    socket.on("refresh", () => {
+      this.getLogs();
+    });
+
+    this.getLogs();
   },
 };
 </script>

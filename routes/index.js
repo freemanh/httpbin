@@ -27,6 +27,7 @@ router.get('/webhook', function (req, res, next) {
 
   RequestLog.create(log).then(() => {
     res.send('')
+    req.app.get('io').emit('refresh')
   }).catch(err => {
     next(err)
   })
