@@ -14,7 +14,7 @@
       </a-menu>
     </a-layout-header>
     <a-layout>
-      <a-layout-sider width="250" style="background: #fff; padding-left: 12px">
+      <a-layout-sider width="300" style="background: #fff; padding-left: 12px">
         <a-list
           item-layout="horizontal"
           :data-source="data"
@@ -24,8 +24,14 @@
           }"
           header="Requests (Last 50 records)"
         >
-          <a-list-item slot="renderItem" slot-scope="item">
-            <a-list-item-meta description="08/26/2021 2:55:54 PM">
+          <a-list-item
+            slot="renderItem"
+            slot-scope="item"
+            @click="onChange(item)"
+          >
+            <a-list-item-meta
+              :description="new Date(item.createdAt).toLocaleString()"
+            >
               <span slot="title">{{ item.path }}</span>
               <a-avatar
                 slot="avatar"
@@ -115,29 +121,35 @@ export default {
       headerColumns: headerColumns,
       headers: [],
       details: [],
+      selectedItem: {},
       collapsed: false,
       data: [],
       selectedRowKeys: [],
     };
   },
   methods: {
-    onSelectChange() {
-      //this.selectedRowKeys = selectedRowKeys;
+    onChange(item) {
+      console.log(item)
+      this.selectedItem = item;
     },
+
     getLogs() {
       this.axios.get("/logs").then((res) => {
         this.data = res.data;
-        this.headers = Object.keys(res.data[0].headers).map((header) => {
-          return { key: header, value: res.data[0].headers[header] };
+
+        this.selectedItem = res.data[0];
+
+        this.headers = Object.keys(this.selectedItem.headers).map((header) => {
+          return { key: header, value: this.selectedItem.headers[header] };
         });
         this.details = [
           {
             key: "Method",
-            value: res.data[0].method,
+            value: this.selectedItem.method,
           },
           {
             key: "Date",
-            value: res.data[0].createdAt,
+            value: new Date(this.selectedItem.createdAt).toLocaleString(),
           },
         ];
       });
