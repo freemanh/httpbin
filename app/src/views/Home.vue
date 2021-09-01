@@ -167,7 +167,7 @@ export default {
   mounted() {
     const io = require("socket.io-client");
 
-    const socket = io("http://localhost:3000");
+    const socket = io(process.env.VUE_APP_API_BASE_URL || null);
     socket.on("connect", () => {
       console.log("websocket connected..."); // true
     });
