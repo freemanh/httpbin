@@ -4,6 +4,15 @@ var router = express.Router();
 const RequestLog = require('../db/RequestLog')
 
 router.get('/', function (req, res, next) {
+  handle(req, res, next)
+
+});
+
+router.post('/', function (req, res, next) {
+  handle(req, res, next)
+})
+
+function handle(req, res, next) {
   const log = new RequestLog({
     url: req.originalUrl,
     path: req.originalUrl,
@@ -20,7 +29,6 @@ router.get('/', function (req, res, next) {
   }).catch(err => {
     next(err)
   })
-
-});
+}
 
 module.exports = router;
