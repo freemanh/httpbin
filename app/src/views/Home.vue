@@ -148,6 +148,10 @@ export default {
           key: "Date",
           value: new Date(this.selectedItem.createdAt).toLocaleString(),
         },
+        {
+          key: "Body",
+          value: this.selectedItem.body
+        }
       ];
     },
 
