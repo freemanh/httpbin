@@ -28,7 +28,7 @@
             slot="renderItem"
             slot-scope="item"
             @click="onChange(item)"
-            :class="{'selectedItem': item._id==selectedItem._id}"
+            :class="{ selectedItem: item._id == selectedItem._id }"
           >
             <a-list-item-meta
               :description="new Date(item.createdAt).toLocaleString()"
@@ -36,7 +36,11 @@
               <span slot="title">{{ item.path }}</span>
               <a-avatar
                 slot="avatar"
-                style="color: #fff; backgroundColor: #5cb85c"
+                :style="{
+                  color: '#fff',
+                  backgroundColor:
+                    item.method === 'POST' ? '#49cc90' : '#61affe',
+                }"
                 shape="square"
               >
                 {{ item.method }}
@@ -130,7 +134,7 @@ export default {
   },
   methods: {
     onChange(item) {
-      this.updateDetails(item)
+      this.updateDetails(item);
     },
 
     updateDetails(item) {
@@ -150,8 +154,8 @@ export default {
         },
         {
           key: "Body",
-          value: this.selectedItem.body
-        }
+          value: this.selectedItem.body,
+        },
       ];
     },
 
@@ -159,7 +163,7 @@ export default {
       this.axios.get("/logs").then((res) => {
         this.data = res.data;
 
-        this.updateDetails(res.data[0])
+        this.updateDetails(res.data[0]);
       });
     },
   },
