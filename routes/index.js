@@ -21,7 +21,8 @@ router.get('/webhook', function (req, res, next) {
     path: req.url,
     method: req.method,
     createdAt: new Date(),
-    body: req.body,
+    // when request body is empty, req.body return a empty object
+    body: typeof req.body === 'string' ? req.body : null,
     headers: req.headers
   })
 

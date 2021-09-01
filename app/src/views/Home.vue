@@ -28,6 +28,7 @@
             slot="renderItem"
             slot-scope="item"
             @click="onChange(item)"
+            :class="{'selectedItem': item._id==selectedItem._id}"
           >
             <a-list-item-meta
               :description="new Date(item.createdAt).toLocaleString()"
@@ -35,7 +36,7 @@
               <span slot="title">{{ item.path }}</span>
               <a-avatar
                 slot="avatar"
-                style="color: #fff; backgroundcolor: #5cb85c"
+                style="color: #fff; backgroundColor: #5cb85c"
                 shape="square"
               >
                 {{ item.method }}
@@ -58,7 +59,7 @@
             minHeight: '280px',
           }"
         >
-          <a-row gutter="24">
+          <a-row :gutter="24">
             <a-col :span="12">
               <b>Request Details</b>
               <a-table
@@ -129,29 +130,32 @@ export default {
   },
   methods: {
     onChange(item) {
-      console.log(item)
+      this.updateDetails(item)
+    },
+
+    updateDetails(item) {
       this.selectedItem = item;
+
+      this.headers = Object.keys(this.selectedItem.headers).map((header) => {
+        return { key: header, value: this.selectedItem.headers[header] };
+      });
+      this.details = [
+        {
+          key: "Method",
+          value: this.selectedItem.method,
+        },
+        {
+          key: "Date",
+          value: new Date(this.selectedItem.createdAt).toLocaleString(),
+        },
+      ];
     },
 
     getLogs() {
       this.axios.get("/logs").then((res) => {
         this.data = res.data;
 
-        this.selectedItem = res.data[0];
-
-        this.headers = Object.keys(this.selectedItem.headers).map((header) => {
-          return { key: header, value: this.selectedItem.headers[header] };
-        });
-        this.details = [
-          {
-            key: "Method",
-            value: this.selectedItem.method,
-          },
-          {
-            key: "Date",
-            value: new Date(this.selectedItem.createdAt).toLocaleString(),
-          },
-        ];
+        this.updateDetails(res.data[0])
       });
     },
   },
@@ -173,11 +177,7 @@ export default {
 </script>
 
 <style>
-#components-layout-demo-top-side-2 .logo {
-  width: 120px;
-  height: 31px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px 28px 16px 0;
-  float: left;
+.selectedItem {
+  background: rgba(24, 144, 255, 0.2);
 }
 </style>
